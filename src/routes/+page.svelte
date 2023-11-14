@@ -55,6 +55,7 @@
     // Fetch the latest glucose data
     await fetchLatestGlucoseData();
     await fetchLast24GlucoseData();
+    await fetchLast12GlucoseData();
 
     // Set up the interval for the latest glucose data
     const intervalLatest = setInterval(() => {
