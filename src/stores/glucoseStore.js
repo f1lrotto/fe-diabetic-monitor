@@ -14,17 +14,16 @@ async function fetchData(endpoint, store) {
     }
   });
   if (response.ok) {
-    console.log(await response)
     const json = await response.json();
-    console.log(json);
+    console.log('New Data:', json);
     return store.set(json);
   } else {
     throw new Error('Network response was not ok');
   }
 }
 
-export const fetchLatestGlucoseData = (latestGlucoseData) => fetchData(`${API_URL}/latest`, latestGlucoseData);
-export const fetchLast12GlucoseData = (last12GlucoseData) => fetchData(`${API_URL}/last-hours-12`, last12GlucoseData);
-export const fetchLast24GlucoseData = (last24GlucoseData) => fetchData(`${API_URL}/last-hours-24`, last24GlucoseData); 
-export const fetchLastWeekGlucoseData = (lastWeekGlucoseData) => fetchData(`${API_URL}/last-week`, lastWeekGlucoseData);
+export const fetchLatestGlucoseData = () => fetchData(`${API_URL}/latest`, latestGlucoseData);
+export const fetchLast12GlucoseData = () => fetchData(`${API_URL}/last-hours-12`, last12GlucoseData);
+export const fetchLast24GlucoseData = () => fetchData(`${API_URL}/last-hours-24`, last24GlucoseData); 
+export const fetchLastWeekGlucoseData = () => fetchData(`${API_URL}/last-week`, lastWeekGlucoseData);
 

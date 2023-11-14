@@ -1,14 +1,21 @@
 <script>
-    // Import a store or a service if you're fetching data
-    import LatestGlucose from '../components/latestGlucose.svelte';
-    import { latestGlucoseData, fetchLatestGlucoseData } from '../stores/glucoseStore';
     import { onMount } from 'svelte';
 
+    import LatestGlucose from '../components/latestGlucose.svelte';
+    import { latestGlucoseData, fetchLatestGlucoseData } from '../stores/glucoseStore';
+
     onMount(() => {
-        fetchLatestGlucoseData(latestGlucoseData);
-        const interval = setInterval(fetchLatestGlucoseData(latestGlucoseData), 60000);
-        return () => clearInterval(interval);
-    });;
+    fetchLatestGlucoseData(); // Fetch immediately on mount
+
+    // Set up the interval
+    const interval = setInterval(() => {
+        fetchLatestGlucoseData(); // Fetch every minute
+    }, 60000);
+
+    // Clear the interval on component destruction
+    return () => clearInterval(interval);
+});
+
 
 </script>
 
@@ -40,7 +47,6 @@
 </style>
 
 
-<!-- HTML for your component -->
 <div>
     {#if $latestGlucoseData}
         <LatestGlucose data={$latestGlucoseData} />
