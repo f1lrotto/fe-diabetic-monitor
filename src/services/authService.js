@@ -7,11 +7,23 @@ async function login() {
 }
 
 async function logout() {
-  // Handle logout logic (e.g., clear session, redirect)
-  isAuthenticated.set(false);
-  userProfile.set(null);
-  window.location.href = '/';
+  try {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/logout`, {
+      method: 'GET',
+      credentials: 'include' // Important for session-based auth
+    });
+    if (response.ok) {
+      isAuthenticated.set(false);
+      userProfile.set(null);
+      window.location.href = '/';
+    } else {
+      throw new Error('Logout failed');
+    }
+  } catch (error) {
+    console.error('Error during logout:', error);
+  }
 }
+
 
 async function checkAuth() {
   try {
