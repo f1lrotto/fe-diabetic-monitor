@@ -2,9 +2,12 @@
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
 
+  // COMOPONENTS
   import LatestGlucose from '../components/latestGlucose.svelte';
   import TableGlucose from '../components/TableGlucose.svelte';
   import Navbar from '../components/Navbar.svelte';
+  
+  // STORES AND FETCH FUNCTIONS
   import {
     latestGlucoseData,
     fetchLatestGlucoseData,
@@ -16,6 +19,11 @@
     fetchLastWeekGlucoseData,
   } from '../stores/glucoseStore';
 
+  import { checkAuth } from '../service/authService';
+  import { isAuthenticated, userProfile } from '../stores/authStore';
+
+
+  // DECLARE TOP LEVEL STORES
   let activeComponent = writable('home');
   let tableDuration = writable('24h');
   let durationGlucoseFunction = writable(fetchLast24GlucoseData);
@@ -43,6 +51,7 @@
   }
 
   onMount(async () => {
+    await checkAuth();
     // Fetch the latest glucose data
     await fetchLatestGlucoseData();
     await fetchLast24GlucoseData();
@@ -65,29 +74,32 @@
   });
 </script>
 
-<Navbar {activeComponent} {setActive} {setDuration} />
-
-<div>
-  {#if $activeComponent === 'home'}
-    <div>
-      {#if $latestGlucoseData}
-        <LatestGlucose data={$latestGlucoseData} />
-      {:else}
-        <div class="loader" />
-      {/if}
-    </div>
-  {:else if $activeComponent === 'table'}
-    <div>
-      {#if $tableDuration === '12h'}
-        <TableGlucose data={$last12GlucoseData} />
-      {:else if $tableDuration === '24h'}
-        <TableGlucose data={$last24GlucoseData} />
-      {:else if $tableDuration === 'week'}
-        <TableGlucose data={$lastWeekGlucoseData} />
-      {/if}
-    </div>
-  {/if}
-</div>
+{#if $isAuthenticated}
+  <Navbar {activeComponent} {setActive} {setDuration} />
+  <div>
+    {#if $activeComponent === 'home'}
+      <div>
+        {#if $latestGlucoseData}
+          <LatestGlucose data={$latestGlucoseData} />
+        {:else}
+          <div class="loader" />
+        {/if}
+      </div>
+    {:else if $activeComponent === 'table'}
+      <div>
+        {#if $tableDuration === '12h'}
+          <TableGlucose data={$last12GlucoseData} />
+        {:else if $tableDuration === '24h'}
+          <TableGlucose data={$last24GlucoseData} />
+        {:else if $tableDuration === 'week'}
+          <TableGlucose data={$lastWeekGlucoseData} />
+        {/if}
+      </div>
+    {/if}
+  </div>
+{:else}
+  <Navbar {activeComponent} {setActive} {setDuration} />
+{/if}
 
 <style>
   @keyframes spin {

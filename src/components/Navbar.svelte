@@ -1,4 +1,12 @@
 <script>
+    import { isAuthenticated, userProfile } from '../stores/authStore';
+    import { login, logout } from '../services/authService';
+
+    // Check authentication status on component mount
+    onMount(async () => {
+        await checkAuth();
+    });
+
     export let activeComponent;
     export let setActive;
     export let setDuration // New prop for setting duration
@@ -22,6 +30,13 @@
             <option value="24h">Last 24 Hours</option>
             <option value="week">Last Week</option>
         </select>
+    {/if}
+    
+    {#if $isAuthenticated}
+        <button on:click={logout}>Logout</button>
+        <p>Welcome, {$userProfile?.name}</p>
+    {:else}
+        <button on:click={login}>Login with Google</button>
     {/if}
 </nav>
 
