@@ -19,7 +19,7 @@
     fetchLastWeekGlucoseData,
   } from '../stores/glucoseStore';
 
-  import { checkAuth } from '../service/authService';
+  import { checkAuth } from '../services/authService';
   import { isAuthenticated, userProfile } from '../stores/authStore';
 
 
@@ -98,7 +98,7 @@
     {/if}
   </div>
 {:else}
-  <Navbar {activeComponent} {setActive} {setDuration} />
+  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated} {userProfile}/>
 {/if}
 
 <style>
