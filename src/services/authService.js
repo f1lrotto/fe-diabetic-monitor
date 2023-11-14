@@ -20,6 +20,7 @@ async function checkAuth() {
     });
     if (response.ok) {
       const data = await response.json();
+      console.log('Session data:', data);
       if (data.authenticated) {
         isAuthenticated.set(true);
         userProfile.set(data.user);
