@@ -75,7 +75,7 @@
 </script>
 
 {#if $isAuthenticated}
-  <Navbar {activeComponent} {setActive} {setDuration} />
+  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated} {userProfile}/>
   <div>
     {#if $activeComponent === 'home'}
       <div>
