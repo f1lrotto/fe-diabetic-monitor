@@ -9,6 +9,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 async function fetchData(endpoint, store) {
   const response = await fetch(endpoint, {
+    credentials: 'include',
     headers: {
       'Authorization': `Bearer ${import.meta.env.VITE_BEARER_TOKEN}`
     }
