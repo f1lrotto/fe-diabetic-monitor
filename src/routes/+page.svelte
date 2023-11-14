@@ -25,7 +25,7 @@
 
   // DECLARE TOP LEVEL STORES
   let activeComponent = writable('home');
-  let tableDuration = writable('24h');
+  let tableDuration = writable('12h');
   let durationGlucoseFunction = writable(fetchLast24GlucoseData);
 
   function setActive(component) {
