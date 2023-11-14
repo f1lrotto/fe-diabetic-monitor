@@ -1,56 +1,111 @@
 <script>
-    import { onMount } from 'svelte';
+  import { onMount } from 'svelte';
+  import { writable } from 'svelte/store';
 
-    import LatestGlucose from '../components/latestGlucose.svelte';
-    import { latestGlucoseData, fetchLatestGlucoseData } from '../stores/glucoseStore';
+  import LatestGlucose from '../components/latestGlucose.svelte';
+  import TableGlucose from '../components/TableGlucose.svelte';
+  import Navbar from '../components/Navbar.svelte';
+  import {
+    latestGlucoseData,
+    fetchLatestGlucoseData,
+    last12GlucoseData,
+    fetchLast12GlucoseData,
+    last24GlucoseData,
+    fetchLast24GlucoseData,
+    lastWeekGlucoseData,
+    fetchLastWeekGlucoseData,
+  } from '../stores/glucoseStore';
 
-    onMount(() => {
-    fetchLatestGlucoseData(); // Fetch immediately on mount
+  let activeComponent = writable('home');
+  let tableDuration = writable('24h');
+  let durationGlucoseFunction = writable(fetchLast24GlucoseData);
 
-    // Set up the interval
-    const interval = setInterval(() => {
-        fetchLatestGlucoseData(); // Fetch every minute
+  function setActive(component) {
+    activeComponent.set(component);
+  }
+
+  async function setDuration(duration) {
+    tableDuration.set(duration);
+    switch (duration) {
+      case '12h':
+        await fetchLast12GlucoseData();
+        durationGlucoseFunction.set(fetchLast12GlucoseData);
+        break;
+      case '24h':
+        await fetchLast24GlucoseData();
+        durationGlucoseFunction.set(fetchLast24GlucoseData);
+        break;
+      case 'week':
+        await fetchLastWeekGlucoseData();
+        durationGlucoseFunction.set(fetchLastWeekGlucoseData);
+        break;
+    }
+  }
+
+  onMount(async () => {
+    // Fetch the latest glucose data
+    await fetchLatestGlucoseData();
+    await fetchLast24GlucoseData();
+
+    // Set up the interval for the latest glucose data
+    const intervalLatest = setInterval(() => {
+      fetchLatestGlucoseData(); // Fetch every minute
     }, 60000);
 
-    // Clear the interval on component destruction
-    return () => clearInterval(interval);
-});
+    const intervalTable = setInterval(async () => {
+      const fetchFunction = $durationGlucoseFunction;
+      await fetchFunction();
+    }, 5 * 60000);
 
-
+    // Clear the intervals on component destruction
+    return () => {
+      clearInterval(intervalLatest);
+      clearInterval(intervalTable);
+    };
+  });
 </script>
 
-<style>
-    .loading {
-        font-size: 1.2em;
-        color: #555; /* Adjust the color as per your theme */
-        text-align: center;
-        padding: 20px;
-        margin-top: 50px;
-        border-radius: 5px;
-        background-color: #f3f3f3; /* Light grey background */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* subtle shadow for depth */
-
-        /* Simple Animation */
-        animation: pulse 1.5s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-        0%, 100% {
-            transform: scale(1);
-            opacity: 1;
-        }
-        50% {
-            transform: scale(1.1);
-            opacity: 0.7;
-        }
-    }
-</style>
-
+<Navbar {activeComponent} {setActive} {setDuration} />
 
 <div>
-    {#if $latestGlucoseData}
+  {#if $activeComponent === 'home'}
+    <div>
+      {#if $latestGlucoseData}
         <LatestGlucose data={$latestGlucoseData} />
-    {:else}
-        <p class="loading">Loading glucose data...</p>
-    {/if}
+      {:else}
+        <div class="loader" />
+      {/if}
+    </div>
+  {:else if $activeComponent === 'table'}
+    <div>
+      {#if $tableDuration === '12h'}
+        <TableGlucose data={$last12GlucoseData} />
+      {:else if $tableDuration === '24h'}
+        <TableGlucose data={$last24GlucoseData} />
+      {:else if $tableDuration === 'week'}
+        <TableGlucose data={$lastWeekGlucoseData} />
+      {/if}
+    </div>
+  {/if}
 </div>
+
+<style>
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+    margin: 20px auto;
+  }
+</style>

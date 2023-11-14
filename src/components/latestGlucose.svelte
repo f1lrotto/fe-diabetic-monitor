@@ -39,8 +39,8 @@
 
   function formatTime(timestamp) {
     let date = new Date(timestamp);
-    date.setHours(date.getHours() - 2);
-    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    return ('0' + date.getUTCHours()).slice(-2) + ':' + 
+           ('0' + date.getUTCMinutes()).slice(-2);
   }
 
   function toggleUnit() {
@@ -53,7 +53,7 @@
     font-family: sans-serif;
     text-align: center;
     padding: 20px;
-    margin-top: 50px;
+    margin-top: 0px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
