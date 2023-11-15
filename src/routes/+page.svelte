@@ -32,6 +32,9 @@
   let tableDuration = writable('12h');
   let durationGlucoseFunction = writable(fetchLast24GlucoseData);
   let graphFetchFunction = writable(fetchLast12GlucoseData);
+  let graphStore = null;
+  let isMobile = false;
+
 
   function setActive(component) {
     activeComponent.set(component);
@@ -63,11 +66,14 @@
       await checkAuth();
     }
 
-    // if the screen is a phone, fetch only 6 hours of data instead of 12 for the graph
-    if (window.screen.width < 600) {
+    isMobile = window.screen.width < 600;
+
+    if (isMobile) {
       graphFetchFunction.set(fetchLast6GlucoseData);
+      graphStore=(last6GlucoseData);
     } else {
-      graphFetchFunction.set(fetchLast12GlucoseData); // for computers, fetch 12 hours of data
+      graphFetchFunction.set(fetchLast12GlucoseData);
+      graphStore=(last12GlucoseData);
     }
 
 
@@ -107,8 +113,8 @@
       <div>
         {#if $latestGlucoseData}
           <LatestGlucose data={$latestGlucoseData} />
-          {#if $last12GlucoseData}
-            <GlucoseChart data={$graphFetchFunction} />
+          {#if $graphStore}
+            <GlucoseChart data={$graphStore} />
           {:else}
             <div class="loader" />
           {/if}
