@@ -16,7 +16,6 @@ async function fetchData(endpoint, store) {
   });
   if (response.ok) {
     const json = await response.json();
-    console.log('New Data:', json);
     return store.set(json);
   } else {
     throw new Error('Network response was not ok');
