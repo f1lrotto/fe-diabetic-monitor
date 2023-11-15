@@ -13,6 +13,8 @@
   import {
     latestGlucoseData,
     fetchLatestGlucoseData,
+    last6GlucoseData,
+    fetchLast6GlucoseData,
     last12GlucoseData,
     fetchLast12GlucoseData,
     last24GlucoseData,
@@ -29,6 +31,7 @@
   let activeComponent = writable('home');
   let tableDuration = writable('12h');
   let durationGlucoseFunction = writable(fetchLast24GlucoseData);
+  let graphFetchFunction = writable(fetchLast12GlucoseData);
 
   function setActive(component) {
     activeComponent.set(component);
@@ -59,15 +62,26 @@
     } else {
       await checkAuth();
     }
+
+    // if the screen is a phone, fetch only 6 hours of data instead of 12 for the graph
+    if (window.screen.width < 600) {
+      graphFetchFunction.set(fetchLast6GlucoseData);
+    } else {
+      graphFetchFunction.set(fetchLast12GlucoseData); // for computers, fetch 12 hours of data
+    }
+
+
     // Fetch the latest glucose data
     await fetchLatestGlucoseData();
     await fetchLast24GlucoseData();
-    await fetchLast12GlucoseData();
+    
+    const graphFetchFun = $graphFetchFunction;
+    await graphFetchFun();
 
     // Set up the interval for the latest glucose data
     const intervalLatest = setInterval(async () => {
       await fetchLatestGlucoseData(); // Fetch every minute
-      await fetchLast12GlucoseData();
+      await graphFetchFun();
     }, 60000);
 
     const intervalTable = setInterval(async () => {
@@ -94,7 +108,7 @@
         {#if $latestGlucoseData}
           <LatestGlucose data={$latestGlucoseData} />
           {#if $last12GlucoseData}
-            <GlucoseChart data={$last12GlucoseData} />
+            <GlucoseChart data={$graphFetchFunction} />
           {:else}
             <div class="loader" />
           {/if}
