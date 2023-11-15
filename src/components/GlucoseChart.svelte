@@ -12,30 +12,10 @@
   let isSmooth = true;
   let interval = 5;
 
-  function formatTime(timestamp) {
-    let date = new Date(timestamp);
-    return ('0' + date.getUTCHours()).slice(-2) + ':' + ('0' + date.getUTCMinutes()).slice(-2);
-  }
-
-  function formatDate(timestamp) {
-    let date = new Date(timestamp);
-    return (
-      date.getUTCFullYear() +
-      '-' +
-      ('0' + (date.getUTCMonth() + 1)).slice(-2) +
-      '-' +
-      ('0' + date.getUTCDate()).slice(-2)
-    );
-  }
 
   function prepareChartData(data) {
     return data.map((item) => ({
-      x: {
-        t: item.timestamp,
-        f: function (timestamp) {
-          return formatDate(timestamp) + ' ' + formatTime(timestamp);
-        },
-      },
+      x: new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() - 1),
       y: item.glucoseMMOL,
     }));
   }
