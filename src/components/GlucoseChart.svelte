@@ -10,7 +10,7 @@
   let chart = null;
   let chartInitialized = false;
   let isSmooth = true;
-  let interval = 5;
+  let interval = window.innerWidth < 600 ? '10' : '5';
 
   function formatTime(timestamp) {
     let date = new Date(timestamp);
@@ -151,7 +151,7 @@
     const processedData = isSmooth ? aggregateDataForSmoothMode(data, interval) : data;
     chart.data.datasets[0].data = prepareChartData(processedData);
     chart.data.datasets[0].tension = isSmooth ? 0.4 : 0.1;
-    chart.data.datasets[0].pointRadius = isSmooth ? 0 : 3;
+    chart.data.datasets[0].pointRadius = isSmooth ? 0 : 2;
     chart.update();
   }
 </script>
@@ -161,11 +161,11 @@
     {isSmooth ? 'Switch to Detailed' : 'Switch to Smooth'}
   </button>
   {#if isSmooth}
-    <select name="Interval" id="interval" on:change={(e) => (interval = +e.target.value)}>
-      <option value="5">5 minutes</option>
-      <option value="10">10 minutes</option>
-      <option value="15">15 minutes</option>
-      <option value="30">30 minutes</option>
+    <select name="interval" id="interval" bind:value={interval}>
+      <option value="5" selected={interval === '5'}>5 minutes</option>
+      <option value="10" selected={interval === '10'}>10 minutes</option>
+      <option value="15" selected={interval === '15'}>15 minutes</option>
+      <option value="30" selected={interval === '30'}>30 minutes</option>
     </select>
   {/if}
   <canvas id="glucoseChart" />
@@ -213,6 +213,5 @@
     display: block; /* This will place it below the glucose level and arrow image */
     margin-top: 0px; /* Adds some space between this text and the elements above */
     margin-bottom: 0px; /* Adds some space between this text and the elements below */
-
   }
 </style>
