@@ -12,10 +12,6 @@
   let isSmooth = true;
   let interval = 5;
 
-  // get the screen width
-  const screenWidth = window.screen.width;
-  console.log(screenWidth);
-
   function prepareChartData(data) {
     return data.map((item) => ({
       x: new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() - 1),
