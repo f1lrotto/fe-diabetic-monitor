@@ -65,8 +65,9 @@
     await fetchLast12GlucoseData();
 
     // Set up the interval for the latest glucose data
-    const intervalLatest = setInterval(() => {
-      fetchLatestGlucoseData(); // Fetch every minute
+    const intervalLatest = setInterval(async () => {
+      await fetchLatestGlucoseData(); // Fetch every minute
+      await fetchLast12GlucoseData();
     }, 60000);
 
     const intervalTable = setInterval(async () => {
