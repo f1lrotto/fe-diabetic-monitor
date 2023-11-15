@@ -5,6 +5,7 @@
   export let setActive;
   export let setDuration; // New prop for setting duration
   export let isAuthenticated;
+  export let tableDuration;
 </script>
 
 <nav>
@@ -22,9 +23,9 @@
     <!-- Dropdown for selecting duration, only visible when Table is active -->
     {#if $activeComponent === 'table'}
       <select on:change={(e) => setDuration(e.target.value)}>
-        <option value="12h">Last 12 Hours</option>
-        <option value="24h">Last 24 Hours</option>
-        <option value="week">Last Week</option>
+        <option value="12h" selected={$tableDuration === '12h'}>Last 12 Hours</option>
+        <option value="24h" selected={$tableDuration === '24h'}>Last 24 Hours</option>
+        <option value="week" selected={$tableDuration === 'week'}>Last Week</option>
       </select>
     {/if}
     <button class="login-button" on:click={logout}>Logout</button>
