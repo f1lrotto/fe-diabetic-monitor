@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 
 export const latestGlucoseData = writable(null);
+export const last6GlucoseData = writable(null);
 export const last12GlucoseData = writable(null);
 export const last24GlucoseData = writable(null);
 export const lastWeekGlucoseData = writable(null);
@@ -23,6 +24,7 @@ async function fetchData(endpoint, store) {
 }
 
 export const fetchLatestGlucoseData = () => fetchData(`${API_URL}/latest`, latestGlucoseData);
+export const fetchLast6GlucoseData = () => fetchData(`${API_URL}/last-hours-6`, last6GlucoseData);
 export const fetchLast12GlucoseData = () => fetchData(`${API_URL}/last-hours-12`, last12GlucoseData);
 export const fetchLast24GlucoseData = () => fetchData(`${API_URL}/last-hours-24`, last24GlucoseData); 
 export const fetchLastWeekGlucoseData = () => fetchData(`${API_URL}/last-week`, lastWeekGlucoseData);
