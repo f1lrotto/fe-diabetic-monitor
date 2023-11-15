@@ -9,12 +9,19 @@
 
   let chart = null;
   let chartInitialized = false;
+  let isSmooth = true;
+  let interval = 5;
+
 
   function prepareChartData(data) {
     return data.map((item) => ({
       x: item.timestamp,
       y: item.glucoseMMOL,
     }));
+  }
+
+  function aggregateDataForSmoothMode(data, interval = 5) {
+    return data.filter((_, index) => index % interval === 0); // Take every 10th data point
   }
 
   function customLineSegment(context) {
@@ -130,16 +137,60 @@
   });
 
   $: if (chartInitialized && data) {
-    chart.data.datasets[0].data = prepareChartData(data);
+    const processedData = isSmooth ? aggregateDataForSmoothMode(data, interval) : data;
+    chart.data.datasets[0].data = prepareChartData(processedData);
+    chart.data.datasets[0].tension = isSmooth ? 0.4 : 0.1;
+    chart.data.datasets[0].pointRadius = isSmooth ? 0 : 3;
     chart.update();
   }
+ 
 </script>
 
-<canvas id="glucoseChart" />
-<p>Last updated {data[data.length - 1].timestamp}</p>
+<div>
+  <button on:click={() => isSmooth = !isSmooth}>
+    {isSmooth ? 'Switch to Detailed' : 'Switch to Smooth'}
+  </button>
+  {#if isSmooth}
+    <select name="Interval" id="interval" on:change={(e) => interval = +e.target.value}>
+      <option value="5">5 minutes</option>
+      <option value="10">10 minutes</option>
+      <option value="15">15 minutes</option>
+      <option value="30">30 minutes</option>
+    </select>
+  {/if}
+  <canvas id="glucoseChart" />
+  <p>Last updated {data[data.length - 1].timestamp}</p>
+</div>
+
 <style>
   #glucoseChart {
     width: 100%;
-    max-height: 60vh;
+    max-height: 50vh;
+  }
+    button {
+    /* Styles for navigation buttons */
+    margin-right: 10px;
+    margin-top: 10px;
+    padding: 10px 15px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 5px;
+    background-color: #f5f5f5;
+  }
+
+  button:hover {
+    background-color: #e0e0e0;
+  }
+
+  select {
+    /* Styles for the dropdown */
+    padding: 10px 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    height: 35px;
+    background-color: #f5f5f5;
+    border: 0px solid #ccc;
   }
 </style>
