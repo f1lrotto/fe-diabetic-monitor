@@ -6,6 +6,8 @@
   import LatestGlucose from '../components/latestGlucose.svelte';
   import TableGlucose from '../components/TableGlucose.svelte';
   import Navbar from '../components/Navbar.svelte';
+  import GlucoseChart from '../components/GlucoseChart.svelte';
+
   
   // STORES AND FETCH FUNCTIONS
   import {
@@ -51,7 +53,12 @@
   }
 
   onMount(async () => {
-    await checkAuth();
+    // if this is local development, set the user to authenticated
+    if (window.location.hostname === 'localhost') {
+      isAuthenticated.set(true);
+    } else {
+      await checkAuth();
+    }
     // Fetch the latest glucose data
     await fetchLatestGlucoseData();
     await fetchLast24GlucoseData();
@@ -66,22 +73,30 @@
       const fetchFunction = $durationGlucoseFunction;
       await fetchFunction();
     }, 5 * 60000);
+    
 
     // Clear the intervals on component destruction
     return () => {
       clearInterval(intervalLatest);
       clearInterval(intervalTable);
     };
+
+
   });
 </script>
 
 {#if $isAuthenticated}
-  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated} {userProfile}/>
+  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated}/>
   <div>
     {#if $activeComponent === 'home'}
       <div>
         {#if $latestGlucoseData}
           <LatestGlucose data={$latestGlucoseData} />
+          {#if $last12GlucoseData}
+            <GlucoseChart data={$last12GlucoseData} />
+          {:else}
+            <div class="loader" />
+          {/if}
         {:else}
           <div class="loader" />
         {/if}
@@ -99,7 +114,7 @@
     {/if}
   </div>
 {:else}
-  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated} {userProfile}/>
+  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated}/>
 {/if}
 
 <style>
