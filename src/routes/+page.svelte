@@ -84,6 +84,8 @@
     const graphFetchFun = $graphFetchFunction;
     await graphFetchFun();
 
+    await setDuration('12h');
+
     // Set up the interval for the latest glucose data
     const intervalLatest = setInterval(async () => {
       await fetchLatestGlucoseData(); // Fetch every minute
