@@ -5,7 +5,6 @@
   export let setActive;
   export let setDuration; // New prop for setting duration
   export let isAuthenticated;
-  export let userProfile;
 </script>
 
 <nav>
@@ -29,7 +28,6 @@
       </select>
     {/if}
     <button class="login-button" on:click={logout}>Logout</button>
-    <p>Welcome, {$userProfile?.name}</p>
   {:else}
     <button on:click={login}>Login with Google</button>
   {/if}
