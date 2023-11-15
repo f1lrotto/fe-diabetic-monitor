@@ -49,7 +49,6 @@
       !acc[dateKey].some((reading) => reading.timestamp === item.timestamp) &&
       ($filterOption ? [0, 15, 30, 45] : [0, 30]).includes(new Date(item.timestamp).getMinutes())
     ) {
-      console.log(extendedInfo);
       acc[dateKey].push(item);
     }
 
