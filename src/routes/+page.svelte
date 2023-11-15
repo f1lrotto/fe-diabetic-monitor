@@ -29,7 +29,7 @@
 
   // DECLARE TOP LEVEL STORES
   let activeComponent = writable('home');
-  let tableDuration = writable('12h');
+  let tableDuration = writable('24h');
   let durationGlucoseFunction = writable(fetchLast24GlucoseData);
   let graphFetchFunction = writable(fetchLast12GlucoseData);
   let graphStore = null;
@@ -84,7 +84,7 @@
     const graphFetchFun = $graphFetchFunction;
     await graphFetchFun();
 
-    await setDuration('12h');
+    await setDuration('24h');
 
     // Set up the interval for the latest glucose data
     const intervalLatest = setInterval(async () => {
@@ -109,7 +109,7 @@
 </script>
 
 {#if $isAuthenticated}
-  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated}/>
+  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated} {tableDuration}/>
   <div>
     {#if $activeComponent === 'home'}
       <div>
@@ -137,7 +137,7 @@
     {/if}
   </div>
 {:else}
-  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated}/>
+  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated} {tableDuration}/>
 {/if}
 
 <style>
