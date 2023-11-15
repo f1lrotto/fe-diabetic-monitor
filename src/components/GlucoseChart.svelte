@@ -12,6 +12,11 @@
   let isSmooth = true;
   let interval = 5;
 
+  function formatTime(timestamp) {
+    let date = new Date(timestamp);
+    return ('0' + date.getUTCHours()).slice(-2) + ':' + ('0' + date.getUTCMinutes()).slice(-2);
+  }
+
   function prepareChartData(data) {
     return data.map((item) => ({
       x: new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() - 1),
@@ -164,7 +169,7 @@
     </select>
   {/if}
   <canvas id="glucoseChart" />
-  <p>Last updated {data[data.length - 1].timestamp}</p>
+  <p>Last updated {formatTime(data[data.length - 1].timestamp)}</p>
 </div>
 
 <style>
@@ -197,5 +202,17 @@
     height: 35px;
     background-color: #f5f5f5;
     border: 0px solid #ccc;
+  }
+
+  p {
+    font-family: sans-serif;
+    text-align: center;
+    padding: 20px;
+    margin-top: 0px;
+    font-size: 01em; /* Adjust size as needed */
+    display: block; /* This will place it below the glucose level and arrow image */
+    margin-top: 0px; /* Adds some space between this text and the elements above */
+    margin-bottom: 0px; /* Adds some space between this text and the elements below */
+
   }
 </style>
