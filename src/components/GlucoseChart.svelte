@@ -16,7 +16,6 @@
   const screenWidth = window.screen.width;
   console.log(screenWidth);
 
-
   function prepareChartData(data) {
     return data.map((item) => ({
       x: new Date(item.timestamp).setHours(new Date(item.timestamp).getHours() - 1),
@@ -115,7 +114,14 @@
                 borderColor: 'red',
                 borderWidth: 1,
                 borderDash: [10, 5],
-              }
+              },
+              greenRange: {
+                type: 'box',
+                yMin: 4.5,
+                yMax: 7,
+                backgroundColor: 'rgba(0, 128, 0, 0.15)', // semi-transparent green
+                borderWidth: 0,
+              },
             },
           },
         },
@@ -147,15 +153,14 @@
     chart.data.datasets[0].pointRadius = isSmooth ? 0 : 3;
     chart.update();
   }
- 
 </script>
 
 <div>
-  <button on:click={() => isSmooth = !isSmooth}>
+  <button on:click={() => (isSmooth = !isSmooth)}>
     {isSmooth ? 'Switch to Detailed' : 'Switch to Smooth'}
   </button>
   {#if isSmooth}
-    <select name="Interval" id="interval" on:change={(e) => interval = +e.target.value}>
+    <select name="Interval" id="interval" on:change={(e) => (interval = +e.target.value)}>
       <option value="5">5 minutes</option>
       <option value="10">10 minutes</option>
       <option value="15">15 minutes</option>
@@ -171,7 +176,7 @@
     width: 100%;
     max-height: 50vh;
   }
-    button {
+  button {
     /* Styles for navigation buttons */
     margin-right: 10px;
     margin-top: 10px;
