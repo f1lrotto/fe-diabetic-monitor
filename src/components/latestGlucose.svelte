@@ -1,9 +1,11 @@
 <script>
   export let data;
+  export let postMeal;
 
   let isMmol = true;
   let trendStatus;
   let backgroundColor;
+  let displayText = ''
 
   // Reactive block for trendStatus
   $: {
@@ -48,6 +50,19 @@
   function toggleUnit() {
     isMmol = !isMmol;
   }
+
+  let selectedMealType = '';
+
+  async function confirmAndPostMeal(mealType) {
+    selectedMealType = '';
+    const confirmPost = confirm(`Do you want to submit a meal of type ${mealType}?`);
+    if (confirmPost) {
+      const currentDate = new Date().toISOString(); // Get the current date in ISO format
+      await postMeal(mealType, currentDate, data.glucoseMMOL);
+    }
+  }
+
+
 </script>
 
 <div
@@ -55,9 +70,7 @@
   style="background-color: {backgroundColor}; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 200px;"
 >
   <div style="display: flex; align-items: center; justify-content: center;">
-    <span class="glucose-level"
-      >{isMmol ? data.glucoseMMOL : data.glucoseMG}</span
-    >
+    <span class="glucose-level">{isMmol ? data.glucoseMMOL : data.glucoseMG}</span>
     <img
       class="arrow"
       src={`../../glucose_trend_${data.trendNumber}.png`}
@@ -66,11 +79,28 @@
     />
   </div>
   <span class="additional-info">{isMmol ? 'mmol/L' : 'mg/dL'}</span>
-  <button class="unitSwitch" on:click={toggleUnit}>Switch Units</button>
+  <div>
+    <button class="unitSwitch" on:click={toggleUnit}>Switch Units</button>
+    <select
+      class="unitSwitch"
+      bind:value={selectedMealType}
+      on:change={() => confirmAndPostMeal(selectedMealType)}
+    >
+      <option value="" disabled selected hidden>Log Meal</option>
+      <option value="Breakfast">Breakfast</option>
+      <option value="Lunch">Lunch</option>
+      <option value="Dinner">Dinner</option>
+      <option value="Snack">Snack</option>
+    </select>
+  </div>
   <p>Last Updated: {formatTime(data.timestamp)}</p>
 </div>
 
 <style>
+  select:hover {
+    background-color: #e0e0e0;
+  }
+
   .latest-glucose-display {
     font-family: sans-serif;
     text-align: center;
@@ -97,6 +127,10 @@
     background-color: rgba(255, 255, 255, 0.7);
   }
 
+  option {
+    padding: 5px 10px;
+  }
+
   .glucose-level {
     font-size: 4em; /* Adjust size as needed */
     display: inline-block; /* This makes it so the image can sit next to this element */
@@ -118,4 +152,5 @@
     display: inline-block; /* This will keep the arrow on the same line as the glucose level */
     vertical-align: middle; /* This will vertically center the arrow relative to the glucose level */
   }
+
 </style>
