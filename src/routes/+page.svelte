@@ -7,8 +7,8 @@
   import TableGlucose from '../components/TableGlucose.svelte';
   import Navbar from '../components/Navbar.svelte';
   import GlucoseChart from '../components/GlucoseChart.svelte';
+  import MealsDashboard from '../components/MealsDashboard.svelte';
 
-  
   // STORES AND FETCH FUNCTIONS
   import {
     latestGlucoseData,
@@ -25,7 +25,9 @@
 
   import { checkAuth } from '../services/authService';
   import { isAuthenticated, userProfile } from '../stores/authStore';
-
+  import {
+    postMeal,
+  } from '../services/mealService';
 
   // DECLARE TOP LEVEL STORES
   let activeComponent = writable('home');
@@ -34,7 +36,6 @@
   let graphFetchFunction = writable(fetchLast12GlucoseData);
   let graphStore = null;
   let isMobile = false;
-
 
   function setActive(component) {
     activeComponent.set(component);
@@ -70,17 +71,16 @@
 
     if (isMobile) {
       graphFetchFunction.set(fetchLast6GlucoseData);
-      graphStore=(last6GlucoseData);
+      graphStore = last6GlucoseData;
     } else {
       graphFetchFunction.set(fetchLast12GlucoseData);
-      graphStore=(last12GlucoseData);
+      graphStore = last12GlucoseData;
     }
-
 
     // Fetch the latest glucose data
     await fetchLatestGlucoseData();
     await fetchLast24GlucoseData();
-    
+
     const graphFetchFun = $graphFetchFunction;
     await graphFetchFun();
 
@@ -96,25 +96,22 @@
       const fetchFunction = $durationGlucoseFunction;
       await fetchFunction();
     }, 5 * 60000);
-    
 
     // Clear the intervals on component destruction
     return () => {
       clearInterval(intervalLatest);
       clearInterval(intervalTable);
     };
-
-
   });
 </script>
 
 {#if $isAuthenticated}
-  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated} {tableDuration}/>
+  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated} {tableDuration} />
   <div>
     {#if $activeComponent === 'home'}
       <div>
         {#if $latestGlucoseData}
-          <LatestGlucose data={$latestGlucoseData} />
+          <LatestGlucose data={$latestGlucoseData} {postMeal} />
           {#if $graphStore}
             <GlucoseChart data={$graphStore} />
           {:else}
@@ -134,10 +131,12 @@
           <TableGlucose data={$lastWeekGlucoseData} />
         {/if}
       </div>
+    {:else if $activeComponent === 'meals'}
+      <MealsDashboard/>
     {/if}
   </div>
 {:else}
-  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated} {tableDuration}/>
+  <Navbar {activeComponent} {setActive} {setDuration} {isAuthenticated} {tableDuration} />
 {/if}
 
 <style>
