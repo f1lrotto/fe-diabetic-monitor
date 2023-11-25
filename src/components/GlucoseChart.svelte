@@ -28,16 +28,6 @@
     return data.filter((_, index) => index % interval === 0); // Take every 10th data point
   }
 
-  function customLineSegment(context) {
-    const { p0, p1 } = context;
-    let color = 'blue';
-    console.log(p0, p1);
-    if (p0.parsed.y > 8 || p1.parsed.y > 8 || p0.parsed.y < 4 || p1.parsed.y < 4) {
-      color = 'red';
-    }
-    return { borderColor: color };
-  }
-
   const verticalLinePlugin = {
     id: 'verticalLine',
     beforeEvent(chart, args, pluginOptions) {
