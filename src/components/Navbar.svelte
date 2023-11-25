@@ -20,6 +20,10 @@
       Table
     </button>
 
+    <button on:click={() => setActive('meals')} class:active={$activeComponent === 'meals'}>
+      Meals
+    </button>
+
     <!-- Dropdown for selecting duration, only visible when Table is active -->
     {#if $activeComponent === 'table'}
       <select on:change={(e) => setDuration(e.target.value)}>
