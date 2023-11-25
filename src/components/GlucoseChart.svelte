@@ -92,7 +92,6 @@
             mode: 'point',
             callbacks: {
               title: function (context) {
-                // Assuming the x-axis is a time scale
                 const date = new Date(context[0].parsed.x);
                 return date.toLocaleTimeString(); // or any other format you prefer
               },
@@ -136,8 +135,8 @@
           },
           y: {
             beginAtZero: false,
-            min: 3.5, // Set the minimum value
-            max: 8.5, // Set the maximum value
+            min: 3, // Set the minimum value
+            max: 10, // Set the maximum value
           },
         },
         responsive: true,
@@ -152,6 +151,7 @@
     chart.data.datasets[0].data = prepareChartData(processedData);
     chart.data.datasets[0].tension = isSmooth ? 0.4 : 0.1;
     chart.data.datasets[0].pointRadius = isSmooth ? 0 : 2;
+    chart.data.datasets[0].pointHoverRadius = isSmooth ? 0 : 8;
     chart.update();
   }
 </script>
