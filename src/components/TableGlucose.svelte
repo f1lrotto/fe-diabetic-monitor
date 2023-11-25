@@ -19,11 +19,11 @@
   function formatDate(timestamp) {
     let date = new Date(timestamp);
     return (
-      date.getUTCFullYear() +
-      '-' +
-      ('0' + (date.getUTCMonth() + 1)).slice(-2) +
-      '-' +
-      ('0' + date.getUTCDate()).slice(-2)
+      date.getUTCDate() +
+      ' ' +
+      new Intl.DateTimeFormat('en-US', { month: 'short' }).format(date) +
+      ' ' +
+      date.getUTCFullYear()
     );
   }
 
@@ -95,8 +95,8 @@
     flex-wrap: wrap;
     align-items: flex-start;
     padding: 10px;
-    border-bottom: 1px solid #ddd; /* Separator between days */
-    font-family: sans-serif;
+    border-bottom: 1px solid #ddd;
+    font-family: 'Arial', sans-serif;
   }
 
   .day-header {
@@ -108,21 +108,37 @@
     font-size: 1.2em;
     color: #333;
     background-color: #f7f7f7;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   .reading {
-    flex: 0 1 150px; /* Flex basis of 150px, change as needed */
-    margin: 5px;
+    flex: 0 1 150px;
+    margin: 10px;
     text-align: center;
+    background-color: #ffffff;
+    box-shadow: 0 7px 6px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 10px;
+    transition: transform 0.3s ease;
+  }
+
+  .reading:hover {
+    transform: translateY(-5px);
   }
 
   .time {
     background-color: #f0f0f0;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 5px;
+
   }
 
   .glucose-level {
-    background-color: #7be827; /* Default background color */
+    background-color: #7be827;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 5px; /* Default background color */
   }
 
   /* Apply specific background colors based on glucoseMMOL */
