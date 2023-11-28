@@ -1,11 +1,12 @@
 <script>
+  import moment from 'moment-timezone';
+
   export let data;
   export let postMeal;
 
   let isMmol = true;
   let trendStatus;
   let backgroundColor;
-  let displayText = ''
 
   // Reactive block for trendStatus
   $: {
@@ -57,8 +58,7 @@
     selectedMealType = '';
     const confirmPost = confirm(`Do you want to submit a meal of type ${mealType}?`);
     if (confirmPost) {
-      const currentDate = new Date().toISOString(); // Get the current date in ISO format
-      await postMeal(mealType, currentDate, data.glucoseMMOL);
+      await postMeal(mealType, data.timestamp, data.glucoseMMOL);
     }
   }
 

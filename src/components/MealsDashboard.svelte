@@ -18,7 +18,6 @@
 
   function formatTime(timestamp) {
     let date = new Date(timestamp);
-    date = new Date(date.getTime() + 3600000);
     return ('0' + date.getUTCHours()).slice(-2) + ':' + ('0' + date.getUTCMinutes()).slice(-2);
   }
 
