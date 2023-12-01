@@ -1,31 +1,48 @@
 <script>
   import { onMount } from 'svelte';
+  import { DateInput } from 'date-picker-svelte'
+  import moment from 'moment-timezone'
 
   import {
-    formatTime,
+    fetchDayData,
+    specificDayGlucoseData,
+  } from '../stores/glucoseStore';
+
+  import {
     initChart,
     updateChart,
   } from '../helpers/chart.js'
-
-  export let data = [];
 
   let chart = null;
   let chartInitialized = false;
   let isSmooth = true;
   let interval = window.innerWidth < 600 ? '10' : '5';
+  let date = null;
 
-  onMount(() => {
-    chart = initChart(document, data);
+  onMount(async () => {
+    date = new Date();
+    await fetchDayData(new Date())
+    chart = initChart(document, $specificDayGlucoseData);
     chartInitialized = true;
   });
 
-  $: if (chartInitialized && data) {
-    chart = updateChart(chart, data, isSmooth, interval)
+  $: if (chartInitialized && $specificDayGlucoseData) {
+    chart = updateChart(chart, $specificDayGlucoseData, isSmooth, interval)
     chart.update();
   }
+
+  $: if (date) {
+    fetchDayData(date);
+  }
+
 </script>
 
 <div>
+  <DateInput
+    bind:value={date}
+		format="dd/MM/yyyy"
+		placeholder={moment(date).format('dd/MM/yyyy')}
+    max={new Date()} />
   <button on:click={() => (isSmooth = !isSmooth)}>
     {isSmooth ? 'Switch to Detailed' : 'Switch to Smooth'}
   </button>
@@ -38,13 +55,13 @@
     </select>
   {/if}
   <canvas id="glucoseChart" />
-  <p>Last updated {formatTime(data[data.length - 1].timestamp)}</p>
 </div>
 
 <style>
   #glucoseChart {
     width: 100%;
-    max-height: 50vh;
+    height: 80vh;
+    max-height: 80vh;
   }
   button {
     /* Styles for navigation buttons */
@@ -73,14 +90,4 @@
     border: 0px solid #ccc;
   }
 
-  p {
-    font-family: sans-serif;
-    text-align: center;
-    padding: 20px;
-    margin-top: 0px;
-    font-size: 01em; /* Adjust size as needed */
-    display: block; /* This will place it below the glucose level and arrow image */
-    margin-top: 0px; /* Adds some space between this text and the elements above */
-    margin-bottom: 0px; /* Adds some space between this text and the elements below */
-  }
 </style>

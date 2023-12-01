@@ -24,6 +24,14 @@
       Meals
     </button>
 
+    <button on:click={() => setActive('chart')} class:active={$activeComponent === 'chart'}>
+      Charts
+    </button>
+
+    <button on:click={() => setActive('stats')} class:active={$activeComponent === 'stats'}>
+      Stats
+    </button>
+
     <!-- Dropdown for selecting duration, only visible when Table is active -->
     {#if $activeComponent === 'table'}
       <select on:change={(e) => setDuration(e.target.value)}>
@@ -34,7 +42,7 @@
     {/if}
     <button class="login-button" on:click={logout}>Logout</button>
   {:else}
-    <button on:click={login}>Login with Google</button>
+    <button class="login-button" on:click={login}>Login with Google</button>
   {/if}
 </nav>
 
@@ -59,7 +67,7 @@
   }
 
   .login-button {
-    margin-right: auto;
+    margin-right: 0px;
   }
 
   button:hover {

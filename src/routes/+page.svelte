@@ -8,6 +8,8 @@
   import Navbar from '../components/Navbar.svelte';
   import GlucoseChart from '../components/GlucoseChart.svelte';
   import MealsDashboard from '../components/MealsDashboard.svelte';
+  import Charts from '../components/Charts.svelte';
+  import Stats from '../components/Stats.svelte';
 
   // STORES AND FETCH FUNCTIONS
   import {
@@ -133,6 +135,10 @@
       </div>
     {:else if $activeComponent === 'meals'}
       <MealsDashboard/>
+    {:else if $activeComponent === 'chart'}
+      <Charts/>
+    {:else if $activeComponent === 'stats'}
+      <Stats/>
     {/if}
   </div>
 {:else}
