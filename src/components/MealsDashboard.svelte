@@ -16,6 +16,10 @@
     await fetchMeals();
   }
 
+  async function editMealFun(mealLog) {
+     
+  }
+
   function formatTime(timestamp) {
     let date = new Date(timestamp);
     return ('0' + date.getUTCHours()).slice(-2) + ':' + ('0' + date.getUTCMinutes()).slice(-2);
@@ -79,8 +83,9 @@
               >
                 {postMealMessage(mealLog)} mmol/L
               </div>
-            {/if}
-            <button on:click={deleteMealFun(mealLog)}>Delete</button>
+              {/if}
+              <button on:click={editMealFun(mealLog)}>Edit</button>
+              <button on:click={deleteMealFun(mealLog)}>Delete</button>
           </div>
         {/each}
       </div>
